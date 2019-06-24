@@ -10,6 +10,23 @@ namespace AspLikeInclude.Test
     public class IncludeFileTests
     {
         [TestMethod]
+        public void IncludeZeroSymbol()
+        {
+            string command = "file";
+            string path = @"c:\path\foo.txt";
+            string fullSymbol = string.Format(Globals.REPLACEMENT_PATTERN, command, path);
+            StringBuilder sbDocument = new StringBuilder();
+            sbDocument.AppendLine("   Text before symbol ");
+            //sbDocument.AppendLine(fullSymbol);
+            sbDocument.AppendLine("   Text after symbol ");
+
+            List<ReplaceSymbol> matches = Replacer.getReplaceSymbols(sbDocument.ToString());
+
+            Assert.AreEqual(0, matches.Count);
+        }
+
+
+        [TestMethod]
         public void IncludeOneSymbol()
         {
             string command = "file";
@@ -20,7 +37,7 @@ namespace AspLikeInclude.Test
             sbDocument.AppendLine(fullSymbol);
             sbDocument.AppendLine("   Text after symbol ");
 
-            List<ReplaceSymbol> matches = Replacer.getMatches(sbDocument.ToString());
+            List<ReplaceSymbol> matches = Replacer.getReplaceSymbols(sbDocument.ToString());
 
             Assert.AreEqual(1, matches.Count);
 
@@ -46,7 +63,7 @@ namespace AspLikeInclude.Test
             sbDocument.AppendLine(fullSymbol2);
             sbDocument.AppendLine("   Text after symbol ");
 
-            List<ReplaceSymbol> matches = Replacer.getMatches(sbDocument.ToString());
+            List<ReplaceSymbol> matches = Replacer.getReplaceSymbols(sbDocument.ToString());
 
             Assert.AreEqual(2, matches.Count);
             Assert.AreEqual(fullSymbol1, matches[0].searchString);
@@ -56,6 +73,19 @@ namespace AspLikeInclude.Test
             Assert.AreEqual(fullSymbol2, matches[1].searchString);
             Assert.AreEqual(command2, matches[1].command);
             Assert.AreEqual(path2, matches[1].path);
+        }
+        [TestMethod]
+        public void ShouldFindOneItem()
+        {
+            string command = "file";
+            string path = @"c:\path\foo.txt";
+            string fullSymbol = string.Format(Globals.REPLACEMENT_PATTERN, command, path);
+
+            var item = new ReplaceSymbol(fullSymbol);
+
+            Assert.AreEqual(fullSymbol, item.searchString);
+            Assert.AreEqual(command, item.command);
+            Assert.AreEqual(path, item.path);
         }
 
     }
